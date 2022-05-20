@@ -1,34 +1,36 @@
 import { strictEqual } from 'assert';
-import { v4 as uuid } from 'uuid';
 import { insertQuery, insertMultipleQuery, updateQuery, deleteQuery, deleteMultipleQuery } from '../src/query'
 
 describe('資料庫指令', () => {
   it('回傳新增單筆指令', () => {
     const payload = {
+      "id": "1",
       "email": "test@email.com",
       "password": "password",
       "status": true
     }
     const expected = 'INSERT INTO users (id, email, password, status) VALUES (?, ?, ?, ?)';
-    const { sql: actual } = insertQuery("users", payload);
+    const actual = insertQuery("users", payload);
     strictEqual(actual, expected);
   })
 
   it('回傳新增多筆指令', () => {
     const payload = [
       {
+        "id": "1",
         "email": "test@test.com",
         "password": "password",
         "status": true
       },
       {
+        "id": "2",
         "email": "test@test.com",
         "password": "password",
         "status": true
       }
     ]
     const expected = 'INSERT INTO users (id, email, password, status) VALUES (?, ?, ?, ?), (?, ?, ?, ?)';
-    const { sql: actual } = insertMultipleQuery("users", payload);
+    const actual = insertMultipleQuery("users", payload);
     strictEqual(actual, expected);
   })
 
@@ -37,16 +39,15 @@ describe('資料庫指令', () => {
       "email": "test@test.com",
       "password": "password"
     }
-    const primaryKey = uuid();
     const expected = 'UPDATE users SET email=?, password=? WHERE id = ?'
-    const { sql: actual } = updateQuery("users", payload, primaryKey)
+    const actual = updateQuery("users", payload)
     strictEqual(actual, expected)
 
     const payload1 = {
       "password": "password"
     }
-    const expectd1 = 'UPDATE users SET password=? WHERE id = ?'
-    const { sql: actual1 } = updateQuery("users", payload1, primaryKey);
+    const expectd1 = 'UPDATE users SET password=? WHERE userId = ?'
+    const actual1 = updateQuery("users", payload1, "userId");
     strictEqual(actual1, expectd1);
   })
 

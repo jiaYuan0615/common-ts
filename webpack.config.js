@@ -20,8 +20,7 @@ module.exports = {
   resolve: {
     alias: {
       src: path.resolve(__dirname, "./src"),
-      lodash: path.resolve(__dirname, "./node_modules/lodash"),
-      uuid: path.resolve(__dirname, "./node_modules/uuid")
+      lodash: path.resolve(__dirname, "./node_modules/lodash")
     },
   },
 };
