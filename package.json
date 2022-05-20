@@ -1,0 +1,57 @@
+{
+  "name": "jyz-common-library-ts",
+  "version": "1.0.0",
+  "description": "definitely-type-common-library",
+  "main": "./lib/index.js",
+  "types": "./build/index.d.ts",
+  "scripts": {
+    "test": "mocha -r ts-node/register test/*.test.ts",
+    "build": "tsc && webpack",
+    "nyc": "nyc npm test",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jiaYuan0615/common.git"
+  },
+  "keywords": [
+    "common",
+    "library"
+  ],
+  "author": "JiaYuan Zhang",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jiaYuan0615/common/issues"
+  },
+  "homepage": "https://github.com/jiaYuan0615/common#readme",
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/assert": "^1.5.6",
+    "@types/chai": "^4.3.1",
+    "@types/jest": "^27.5.1",
+    "@types/lodash": "^4.14.182",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^17.0.34",
+    "@types/uuid": "^8.3.4",
+    "babel-core": "^6.21.0",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.24.1",
+    "chai": "^4.3.6",
+    "coveralls": "^3.0.0",
+    "eslint": "^8.15.0",
+    "eslint-plugin-import": "^2.26.0",
+    "esm": "^3.2.25",
+    "mocha": "^5.2.0",
+    "nyc": "^15.1.0",
+    "ts-loader": "^9.3.0",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^4.9.2"
+  }
+}
