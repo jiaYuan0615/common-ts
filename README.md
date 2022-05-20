@@ -33,7 +33,7 @@ NPM 6.14.16
 ### Usage
 
 ```bash
-import * as jyzLib from 'jyz-common-library';
+import * as jyzLib from 'jyz-common-library-type';
 
 const params1 = [1, 2, 3];
 const params2 = [2, 3, 4];
