@@ -2,7 +2,7 @@ import { strictEqual } from 'assert';
 import { insertQuery, insertMultipleQuery, updateQuery, deleteQuery, deleteMultipleQuery } from '../src/query'
 
 describe('資料庫指令', () => {
-  it('回傳新增單筆指令', () => {
+  it('測試新增單筆資料指令', () => {
     const payload = {
       "id": "1",
       "email": "test@email.com",
@@ -14,7 +14,7 @@ describe('資料庫指令', () => {
     strictEqual(actual, expected);
   })
 
-  it('回傳新增多筆指令', () => {
+  it('測試新增多筆資料指令', () => {
     const payload = [
       {
         "id": "1",
@@ -34,7 +34,7 @@ describe('資料庫指令', () => {
     strictEqual(actual, expected);
   })
 
-  it('回傳更新指令', () => {
+  it('測試更新資料指令', () => {
     const payload = {
       "email": "test@test.com",
       "password": "password"
@@ -51,16 +51,29 @@ describe('資料庫指令', () => {
     strictEqual(actual1, expectd1);
   })
 
-  it('回傳刪除單筆指令', () => {
+  it('測試刪除單筆資料指令', () => {
     const expectd = 'DELETE FROM users WHERE id = ?';
     const actual = deleteQuery("users")
     strictEqual(actual, expectd)
   })
 
-  it('回傳刪除多筆指令', () => {
+  it('測試刪除資料指令（根據傳入鍵值）', () => {
+    const expectd = 'DELETE FROM users WHERE avatarId = ?';
+    const actual = deleteQuery("users", "avatarId")
+    strictEqual(actual, expectd)
+  })
+
+  it('測試刪除多筆資料指令', () => {
     const payloads = [1, 2, 3];
     const expectd = 'DELETE FROM users WHERE id IN (?, ?, ?)';
     const actual = deleteMultipleQuery("users", payloads)
+    strictEqual(actual, expectd)
+  })
+
+  it('測試刪除多筆資料指令（根據傳入鍵值）', () => {
+    const payloads = [1, 2, 3];
+    const expectd = 'DELETE FROM users WHERE grade IN (?, ?, ?)';
+    const actual = deleteMultipleQuery("users", payloads, "grade")
     strictEqual(actual, expectd)
   })
 })

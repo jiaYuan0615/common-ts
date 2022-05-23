@@ -46,8 +46,8 @@ console.log(jyzLib.yieldUpdateItem(params1, params2));
 ### Provide Function
 
 - Global
-
   - yieldUpdateItem
+  - yieldDefaultTime
 
 - SQL Command
   - insertQuery

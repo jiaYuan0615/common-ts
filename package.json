@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jiaYuan0615/common.git"
+    "url": "https://github.com/jiaYuan0615/common-ts.git"
   },
   "keywords": [
     "common",
@@ -21,11 +21,12 @@
   "author": "JiaYuan Zhang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jiaYuan0615/common/issues"
+    "url": "https://github.com/jiaYuan0615/common-ts/issues"
   },
-  "homepage": "https://github.com/jiaYuan0615/common#readme",
+  "homepage": "https://github.com/jiaYuan0615/common-ts#readme",
   "dependencies": {
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "moment": "^2.29.3"
   },
   "devDependencies": {
     "@types/assert": "^1.5.6",
