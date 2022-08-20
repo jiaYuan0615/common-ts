@@ -4,14 +4,14 @@
  * @param params 參數
  * @returns SQL 指令 與 注入資料
  */
-export declare function insertQuery(tableName: string, params: object): string;
+export declare function insertQuery(tableName: string, params: object): any;
 /** 新增多筆資料的 SQL 指令
  *
  * @param tableName 資料表名稱
  * @param params 參數
  * @returns SQL 指令 與 注入資料
  */
-export declare function insertMultipleQuery(tableName: string, params: Array<object>): string;
+export declare function insertMultipleQuery(tableName: string, params: Array<object>): any;
 /** 更新資料的 SQL 指令
  *
  * @param tableName 資料表名稱

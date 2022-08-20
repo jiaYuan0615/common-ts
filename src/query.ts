@@ -4,12 +4,17 @@
  * @param params 參數
  * @returns SQL 指令 與 注入資料
  */
-export function insertQuery(tableName: string, params: object): string {
-  const columns = Object.keys(params).join(', ');
+export function insertQuery(tableName: string, params: object): any {
+  const items = Object.keys(params);
+  const columns = items.join(', ');
+  const data = items.map(v => params[v]);
   const replacement = new Array(Object.keys(params).length).fill('?').join(', ')
   const sql = `INSERT INTO ${tableName} (${columns}) VALUES (${replacement})`
 
-  return sql
+  return {
+    sql,
+    data
+  }
 }
 
 /** 新增多筆資料的 SQL 指令
@@ -18,11 +23,16 @@ export function insertQuery(tableName: string, params: object): string {
  * @param params 參數
  * @returns SQL 指令 與 注入資料
  */
-export function insertMultipleQuery(tableName: string, params: Array<object>): string {
+export function insertMultipleQuery(tableName: string, params: Array<object>): any {
   const columns = Object.keys(params[0]).join(', ');
+  const data = params.map(v => Object.keys(v).map(x => v[x]));
   const replacement = params.map(o => `(${new Array(Object.keys(o).length).fill('?').join(', ')})`)
   const sql = `INSERT INTO ${tableName} (${columns}) VALUES ${replacement.join(', ')}`
-  return sql
+
+  return {
+    sql,
+    data
+  }
 }
 
 /** 更新資料的 SQL 指令

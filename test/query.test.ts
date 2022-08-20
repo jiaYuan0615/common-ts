@@ -1,37 +1,43 @@
 import { strictEqual } from 'assert';
+import { expect } from 'chai';
 import { insertQuery, insertMultipleQuery, updateQuery, deleteQuery, deleteMultipleQuery } from '../src/query'
 
 describe('資料庫指令', () => {
   it('測試新增單筆資料指令', () => {
     const payload = {
-      "id": "1",
-      "email": "test@email.com",
-      "password": "password",
-      "status": true
+      id: "1",
+      email: "test@email.com",
+      password: "password",
+      status: true
     }
+    const expectData = Object.keys(payload).map(v => payload[v]);
     const expected = 'INSERT INTO users (id, email, password, status) VALUES (?, ?, ?, ?)';
-    const actual = insertQuery("users", payload);
-    strictEqual(actual, expected);
+    const { sql, data } = insertQuery("users", payload);
+
+    strictEqual(sql, expected);
+    expect(expectData).to.eql(data);
   })
 
   it('測試新增多筆資料指令', () => {
     const payload = [
       {
-        "id": "1",
-        "email": "test@test.com",
-        "password": "password",
-        "status": true
+        id: "1",
+        email: "test@test.com",
+        password: "password",
+        status: true
       },
       {
-        "id": "2",
-        "email": "test@test.com",
-        "password": "password",
-        "status": true
+        id: "2",
+        email: "test@test.com",
+        password: "password",
+        status: true
       }
     ]
+    const expectData = payload.map(v => Object.keys(v).map(x => v[x]));
     const expected = 'INSERT INTO users (id, email, password, status) VALUES (?, ?, ?, ?), (?, ?, ?, ?)';
-    const actual = insertMultipleQuery("users", payload);
-    strictEqual(actual, expected);
+    const { sql, data } = insertMultipleQuery("users", payload);
+    strictEqual(sql, expected);
+    expect(expectData).to.eql(data);
   })
 
   it('測試更新資料指令', () => {

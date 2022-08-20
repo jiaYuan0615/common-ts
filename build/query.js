@@ -8,10 +8,15 @@ exports.deleteMultipleQuery = exports.deleteQuery = exports.updateQuery = export
  * @returns SQL 指令 與 注入資料
  */
 function insertQuery(tableName, params) {
-    var columns = Object.keys(params).join(', ');
+    var items = Object.keys(params);
+    var columns = items.join(', ');
+    var data = items.map(function (v) { return params[v]; });
     var replacement = new Array(Object.keys(params).length).fill('?').join(', ');
     var sql = "INSERT INTO ".concat(tableName, " (").concat(columns, ") VALUES (").concat(replacement, ")");
-    return sql;
+    return {
+        sql: sql,
+        data: data
+    };
 }
 exports.insertQuery = insertQuery;
 /** 新增多筆資料的 SQL 指令
@@ -22,9 +27,13 @@ exports.insertQuery = insertQuery;
  */
 function insertMultipleQuery(tableName, params) {
     var columns = Object.keys(params[0]).join(', ');
+    var data = params.map(function (v) { return Object.keys(v).map(function (x) { return v[x]; }); });
     var replacement = params.map(function (o) { return "(".concat(new Array(Object.keys(o).length).fill('?').join(', '), ")"); });
     var sql = "INSERT INTO ".concat(tableName, " (").concat(columns, ") VALUES ").concat(replacement.join(', '));
-    return sql;
+    return {
+        sql: sql,
+        data: data
+    };
 }
 exports.insertMultipleQuery = insertMultipleQuery;
 /** 更新資料的 SQL 指令
