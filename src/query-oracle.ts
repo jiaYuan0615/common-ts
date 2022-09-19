@@ -44,13 +44,42 @@ export function insertMultipleQueryByOracle(tableName: string, params: Array<obj
  */
 export function updateQueryByOracle(tableName: string, params: object, key: string = 'id'): any {
   let columns: string;
-  if (Object.keys(params).length === 1) {
-    columns = `${Object.keys(params)[0]}=:params`;
+  const items = Object.keys(params)
+  if (items.length === 1) {
+    columns = `${items[0]}=:params`;
   } else {
-    columns = `${Object.keys(params).join('=:params, ')}=:params`;
+    columns = `${items.join('=:params, ')}=:params`;
   }
+  const data = items.map((d: any) => params[d]);
   const sql = `UPDATE ${tableName} SET ${columns} WHERE ${key} = :params`
-  return sql
+  return {
+    sql,
+    data
+  }
+}
+
+/** 更新資料的 SQL 指令
+ * 
+ * @param tableName 資料表名稱
+ * @param params 參數
+ * @param key 主鍵名稱
+ * @returns SQL 指令 與 注入資料
+ */
+export function updateQueryWithMultipleKeyByOracle(tableName: string, params: object, keys: any): any {
+  let columns: string;
+  const items = Object.keys(params);
+  const key = Object.keys(keys).map((v: any) => `${v} = :params`).join(' AND ');
+  if (items.length === 1) {
+    columns = `${items[0]}=:params`;
+  } else {
+    columns = `${items.join('=:params, ')}=:params`;
+  }
+  const data = items.map((d: any) => params[d]);
+  const sql = `UPDATE ${tableName} SET ${columns} WHERE ${key}`
+  return {
+    sql,
+    data
+  }
 }
 
 /** 刪除資料的 SQL 指令
@@ -62,6 +91,23 @@ export function updateQueryByOracle(tableName: string, params: object, key: stri
 export function deleteQueryByOracle(tableName: string, key: string = 'id'): string {
   const sql = `DELETE FROM ${tableName} WHERE ${key} = :params`;
   return sql
+}
+
+/** 刪除資料的 SQL 指令 （使用複合鍵）
+ * 
+ * @param tableName 
+ * @param keys 
+ * @returns SQL 指令 與 注入資料
+ */
+export function deleteQueryWithMultipleKeyByOracle(tableName: string, keys: any) {
+  const items = Object.keys(keys);
+  const key = items.map((v: any) => `${v} = :params`).join(' AND ');
+  const data = items.map((v: any) => keys[v]);
+  const sql = `DELETE FROM ${tableName} WHERE ${key}`;
+  return {
+    sql,
+    data
+  }
 }
 
 /** 刪除多筆資料的 SQL 指令
