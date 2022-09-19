@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMultipleQuery = exports.deleteQuery = exports.updateQuery = exports.insertMultipleQuery = exports.insertQuery = void 0;
+exports.deleteMultipleQuery = exports.deleteQueryWithMultipleKey = exports.deleteQuery = exports.updateQuery = exports.insertMultipleQuery = exports.insertQuery = void 0;
+var lodash_1 = __importDefault(require("lodash"));
 /** 新增資料的 SQL 指令
  *
  * @param tableName 資料表名稱
@@ -40,20 +44,27 @@ exports.insertMultipleQuery = insertMultipleQuery;
  *
  * @param tableName 資料表名稱
  * @param params 參數
- * @param key 主鍵名稱
+ * @param keys 主鍵名稱
  * @returns SQL 指令 與 注入資料
  */
-function updateQuery(tableName, params, key) {
-    if (key === void 0) { key = 'id'; }
+function updateQuery(tableName, params, keys) {
     var columns;
+    var items = Object.keys(params);
+    var keyItems = Object.keys(keys);
+    var key = keyItems.map(function (v) { return "".concat(v, " = ?"); }).join(' AND ');
     if (Object.keys(params).length === 1) {
-        columns = "".concat(Object.keys(params)[0], "=?");
+        columns = "".concat(items[0], "=?");
     }
     else {
-        columns = "".concat(Object.keys(params).join('=?, '), "=?");
+        columns = "".concat(items.join('=?, '), "=?");
     }
-    var sql = "UPDATE ".concat(tableName, " SET ").concat(columns, " WHERE ").concat(key, " = ?");
-    return sql;
+    var data = items.map(function (d) { return params[d]; });
+    var keyData = keyItems.map(function (d) { return keys[d]; });
+    var sql = "UPDATE ".concat(tableName, " SET ").concat(columns, " WHERE ").concat(key);
+    return {
+        sql: sql,
+        data: lodash_1.default.concat(data, keyData)
+    };
 }
 exports.updateQuery = updateQuery;
 /** 刪除資料的 SQL 指令
@@ -68,6 +79,23 @@ function deleteQuery(tableName, key) {
     return sql;
 }
 exports.deleteQuery = deleteQuery;
+/** 刪除資料的 SQL 指令 （使用複合鍵）
+ *
+ * @param tableName
+ * @param keys
+ * @returns SQL 指令 與 注入資料
+ */
+function deleteQueryWithMultipleKey(tableName, keys) {
+    var items = Object.keys(keys);
+    var key = items.map(function (v) { return "".concat(v, " = ?"); }).join(' AND ');
+    var data = items.map(function (v) { return keys[v]; });
+    var sql = "DELETE FROM ".concat(tableName, " WHERE ").concat(key);
+    return {
+        sql: sql,
+        data: data
+    };
+}
+exports.deleteQueryWithMultipleKey = deleteQueryWithMultipleKey;
 /** 刪除多筆資料的 SQL 指令
  *
  * @param tableName 資料表名稱

@@ -16,10 +16,13 @@ export declare function insertMultipleQuery(tableName: string, params: Array<obj
  *
  * @param tableName 資料表名稱
  * @param params 參數
- * @param key 主鍵名稱
+ * @param keys 主鍵名稱
  * @returns SQL 指令 與 注入資料
  */
-export declare function updateQuery(tableName: string, params: object, key?: string): string;
+export declare function updateQuery(tableName: string, params: object, keys: any): {
+    sql: string;
+    data: any[];
+};
 /** 刪除資料的 SQL 指令
  *
  * @param tableName 資料表名稱
@@ -27,6 +30,16 @@ export declare function updateQuery(tableName: string, params: object, key?: str
  * @returns SQL 指令
  */
 export declare function deleteQuery(tableName: string, key?: string): string;
+/** 刪除資料的 SQL 指令 （使用複合鍵）
+ *
+ * @param tableName
+ * @param keys
+ * @returns SQL 指令 與 注入資料
+ */
+export declare function deleteQueryWithMultipleKey(tableName: string, keys: any): {
+    sql: string;
+    data: any[];
+};
 /** 刪除多筆資料的 SQL 指令
  *
  * @param tableName 資料表名稱

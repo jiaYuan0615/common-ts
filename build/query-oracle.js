@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteMultipleQueryByOracle = exports.deleteQueryWithMultipleKeyByOracle = exports.deleteQueryByOracle = exports.updateQueryWithMultipleKeyByOracle = exports.updateQueryByOracle = exports.insertMultipleQueryByOracle = exports.insertQueryByOracle = void 0;
+exports.deleteMultipleQueryByOracle = exports.deleteQueryWithMultipleKeyByOracle = exports.deleteQueryByOracle = exports.updateQueryByOracle = exports.insertMultipleQueryByOracle = exports.insertQueryByOracle = void 0;
+var lodash_1 = __importDefault(require("lodash"));
 /** 新增資料的 SQL 指令
  *
  * @param tableName 資料表名稱
@@ -40,13 +44,14 @@ exports.insertMultipleQueryByOracle = insertMultipleQueryByOracle;
  *
  * @param tableName 資料表名稱
  * @param params 參數
- * @param key 主鍵名稱
+ * @param keys 主鍵名稱
  * @returns SQL 指令 與 注入資料
  */
-function updateQueryByOracle(tableName, params, key) {
-    if (key === void 0) { key = 'id'; }
+function updateQueryByOracle(tableName, params, keys) {
     var columns;
     var items = Object.keys(params);
+    var keyItems = Object.keys(keys);
+    var key = keyItems.map(function (v) { return "".concat(v, " = :params"); }).join(' AND ');
     if (items.length === 1) {
         columns = "".concat(items[0], "=:params");
     }
@@ -54,38 +59,14 @@ function updateQueryByOracle(tableName, params, key) {
         columns = "".concat(items.join('=:params, '), "=:params");
     }
     var data = items.map(function (d) { return params[d]; });
-    var sql = "UPDATE ".concat(tableName, " SET ").concat(columns, " WHERE ").concat(key, " = :params");
-    return {
-        sql: sql,
-        data: data
-    };
-}
-exports.updateQueryByOracle = updateQueryByOracle;
-/** 更新資料的 SQL 指令
- *
- * @param tableName 資料表名稱
- * @param params 參數
- * @param key 主鍵名稱
- * @returns SQL 指令 與 注入資料
- */
-function updateQueryWithMultipleKeyByOracle(tableName, params, keys) {
-    var columns;
-    var items = Object.keys(params);
-    var key = Object.keys(keys).map(function (v) { return "".concat(v, " = :params"); }).join(' AND ');
-    if (items.length === 1) {
-        columns = "".concat(items[0], "=:params");
-    }
-    else {
-        columns = "".concat(items.join('=:params, '), "=:params");
-    }
-    var data = items.map(function (d) { return params[d]; });
+    var keyData = keyItems.map(function (d) { return keys[d]; });
     var sql = "UPDATE ".concat(tableName, " SET ").concat(columns, " WHERE ").concat(key);
     return {
         sql: sql,
-        data: data
+        data: lodash_1.default.concat(data, keyData)
     };
 }
-exports.updateQueryWithMultipleKeyByOracle = updateQueryWithMultipleKeyByOracle;
+exports.updateQueryByOracle = updateQueryByOracle;
 /** 刪除資料的 SQL 指令
  *
  * @param tableName 資料表名稱

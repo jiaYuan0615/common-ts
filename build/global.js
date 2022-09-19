@@ -8,11 +8,11 @@ var lodash_1 = __importDefault(require("lodash"));
 var moment_1 = __importDefault(require("moment"));
 function yieldUpdateItem(origin, update) {
     var preserveItems = lodash_1.default.xor(origin, update);
-    var payload = { "shouldUpdate": false, };
+    var payload = { shouldUpdate: false };
     if (preserveItems.length) {
-        payload["insertItem"] = lodash_1.default.intersection(preserveItems, update);
-        payload["deleteItem"] = lodash_1.default.intersection(preserveItems, origin);
-        payload["shouldUpdate"] = true;
+        payload.insertItem = lodash_1.default.intersection(preserveItems, update);
+        payload.deleteItem = lodash_1.default.intersection(preserveItems, origin);
+        payload.shouldUpdate = true;
     }
     return payload;
 }
