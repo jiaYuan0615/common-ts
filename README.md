@@ -49,9 +49,18 @@ console.log(jyzLib.yieldUpdateItem(params1, params2));
   - yieldUpdateItem
   - yieldDefaultTime
 
-- SQL Command
+- SQL Command For Sequelize
   - insertQuery
   - insertMultipleQuery
   - updateQuery
   - deleteQuery
+  - deleteQueryWithMultipleKey
   - deleteMultipleQuery
+
+- SQL Command For Oracledb
+  - insertQueryByOracle
+  - insertMultipleQueryByOracle
+  - updateQueryByOracle
+  - deleteQueryByOracle
+  - deleteQueryWithMultipleKeyByOracle
+  - deleteMultipleQueryByOracle

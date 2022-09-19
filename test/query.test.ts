@@ -1,5 +1,6 @@
 import { strictEqual } from 'assert';
 import { expect } from 'chai';
+import _ from 'lodash';
 import { insertQuery, insertMultipleQuery, updateQuery, deleteQuery, deleteMultipleQuery } from '../src/query'
 
 describe('資料庫指令', () => {
@@ -41,20 +42,28 @@ describe('資料庫指令', () => {
   })
 
   it('測試更新資料指令', () => {
+    const key = {
+      id: '1'
+    }
     const payload = {
-      "email": "test@test.com",
-      "password": "password"
+      email: "test@test.com",
+      password: "password"
     }
     const expected = 'UPDATE users SET email=?, password=? WHERE id = ?'
-    const actual = updateQuery("users", payload)
-    strictEqual(actual, expected)
+    const { sql, data } = updateQuery("users", payload, key)
+    const expectData = Object.keys(payload).map((d: any) => payload[d]);
+    const expectKeyData = Object.keys(key).map((d: any) => key[d]);
+    strictEqual(sql, expected)
+    expect(_.concat(expectData, expectKeyData)).to.eql(data);
 
     const payload1 = {
-      "password": "password"
+      password: "password"
     }
-    const expectd1 = 'UPDATE users SET password=? WHERE userId = ?'
-    const actual1 = updateQuery("users", payload1, "userId");
+    const expectd1 = 'UPDATE users SET password=? WHERE id = ?'
+    const { sql: actual1, data: data1 } = updateQuery("users", payload1, key);
+    const expectData1 = Object.keys(payload1).map((d: any) => payload1[d]);
     strictEqual(actual1, expectd1);
+    expect(_.concat(expectData1, expectKeyData)).to.eql(data1);
   })
 
   it('測試刪除單筆資料指令', () => {

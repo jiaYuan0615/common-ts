@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 /** 新增資料的 SQL 指令
  * 
  * @param tableName 資料表名稱
@@ -39,46 +41,25 @@ export function insertMultipleQueryByOracle(tableName: string, params: Array<obj
  * 
  * @param tableName 資料表名稱
  * @param params 參數
- * @param key 主鍵名稱
+ * @param keys 主鍵名稱
  * @returns SQL 指令 與 注入資料
  */
-export function updateQueryByOracle(tableName: string, params: object, key: string = 'id'): any {
+export function updateQueryByOracle(tableName: string, params: object, keys: any): any {
   let columns: string;
   const items = Object.keys(params)
+  const keyItems = Object.keys(keys)
+  const key = keyItems.map((v: any) => `${v} = :params`).join(' AND ');
   if (items.length === 1) {
     columns = `${items[0]}=:params`;
   } else {
     columns = `${items.join('=:params, ')}=:params`;
   }
   const data = items.map((d: any) => params[d]);
-  const sql = `UPDATE ${tableName} SET ${columns} WHERE ${key} = :params`
-  return {
-    sql,
-    data
-  }
-}
-
-/** 更新資料的 SQL 指令
- * 
- * @param tableName 資料表名稱
- * @param params 參數
- * @param key 主鍵名稱
- * @returns SQL 指令 與 注入資料
- */
-export function updateQueryWithMultipleKeyByOracle(tableName: string, params: object, keys: any): any {
-  let columns: string;
-  const items = Object.keys(params);
-  const key = Object.keys(keys).map((v: any) => `${v} = :params`).join(' AND ');
-  if (items.length === 1) {
-    columns = `${items[0]}=:params`;
-  } else {
-    columns = `${items.join('=:params, ')}=:params`;
-  }
-  const data = items.map((d: any) => params[d]);
+  const keyData = keyItems.map((d: any) => keys[d]);
   const sql = `UPDATE ${tableName} SET ${columns} WHERE ${key}`
   return {
     sql,
-    data
+    data: _.concat(data, keyData)
   }
 }
 

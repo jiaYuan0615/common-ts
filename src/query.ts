@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 /** 新增資料的 SQL 指令
  * 
  * @param tableName 資料表名稱
@@ -39,18 +41,26 @@ export function insertMultipleQuery(tableName: string, params: Array<object>): a
  * 
  * @param tableName 資料表名稱
  * @param params 參數
- * @param key 主鍵名稱
+ * @param keys 主鍵名稱
  * @returns SQL 指令 與 注入資料
  */
-export function updateQuery(tableName: string, params: object, key: string = 'id'): string {
+export function updateQuery(tableName: string, params: object, keys: any) {
   let columns: string;
+  const items = Object.keys(params)
+  const keyItems = Object.keys(keys)
+  const key = keyItems.map((v: any) => `${v} = ?`).join(' AND ');
   if (Object.keys(params).length === 1) {
-    columns = `${Object.keys(params)[0]}=?`;
+    columns = `${items[0]}=?`;
   } else {
-    columns = `${Object.keys(params).join('=?, ')}=?`;
+    columns = `${items.join('=?, ')}=?`;
   }
-  const sql = `UPDATE ${tableName} SET ${columns} WHERE ${key} = ?`
-  return sql
+  const data = items.map((d: any) => params[d]);
+  const keyData = keyItems.map((d: any) => keys[d]);
+  const sql = `UPDATE ${tableName} SET ${columns} WHERE ${key}`
+  return {
+    sql,
+    data: _.concat(data, keyData)
+  }
 }
 
 /** 刪除資料的 SQL 指令
@@ -62,6 +72,23 @@ export function updateQuery(tableName: string, params: object, key: string = 'id
 export function deleteQuery(tableName: string, key: string = 'id'): string {
   const sql = `DELETE FROM ${tableName} WHERE ${key} = ?`;
   return sql
+}
+
+/** 刪除資料的 SQL 指令 （使用複合鍵）
+ * 
+ * @param tableName 
+ * @param keys 
+ * @returns SQL 指令 與 注入資料
+ */
+export function deleteQueryWithMultipleKey(tableName: string, keys: any) {
+  const items = Object.keys(keys);
+  const key = items.map((v: any) => `${v} = ?`).join(' AND ');
+  const data = items.map((v: any) => keys[v]);
+  const sql = `DELETE FROM ${tableName} WHERE ${key}`;
+  return {
+    sql,
+    data
+  }
 }
 
 /** 刪除多筆資料的 SQL 指令

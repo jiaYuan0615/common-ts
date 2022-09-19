@@ -1,13 +1,13 @@
 import { strictEqual } from 'assert';
 import { expect } from 'chai';
+import _ from 'lodash';
 import {
   insertQueryByOracle,
   insertMultipleQueryByOracle,
   updateQueryByOracle,
   deleteQueryByOracle,
   deleteMultipleQueryByOracle,
-  deleteQueryWithMultipleKeyByOracle,
-  updateQueryWithMultipleKeyByOracle
+  deleteQueryWithMultipleKeyByOracle
 } from '../src/query-oracle'
 
 describe('[Oracle] 資料庫指令', () => {
@@ -49,50 +49,28 @@ describe('[Oracle] 資料庫指令', () => {
   })
 
   it('[Oracle] 測試更新資料指令', () => {
+    const key = {
+      id: '1'
+    }
     const payload = {
-      "email": "test@test.com",
-      "password": "password"
+      email: "test@test.com",
+      password: "password"
     }
     const expected = 'UPDATE users SET email=:params, password=:params WHERE id = :params'
-    const { sql, data } = updateQueryByOracle("users", payload)
+    const { sql, data } = updateQueryByOracle("users", payload, key)
     const expectData = Object.keys(payload).map((d: any) => payload[d])
+    const expectKeyData = Object.keys(key).map((d: any) => key[d]);
     strictEqual(sql, expected)
-    expect(expectData).to.eql(data);
+    expect(_.concat(expectData, expectKeyData)).to.eql(data);
 
     const payload1 = {
-      "password": "password"
+      password: "password"
     }
-    const expectd1 = 'UPDATE users SET password=:params WHERE userId = :params'
-    const { sql: actual1, data: data1 } = updateQueryByOracle("users", payload1, "userId");
+    const expectd1 = 'UPDATE users SET password=:params WHERE id = :params'
+    const { sql: actual1, data: data1 } = updateQueryByOracle("users", payload1, key);
     const expectData1 = Object.keys(payload1).map((d: any) => payload1[d])
     strictEqual(actual1, expectd1);
-    expect(expectData1).to.eql(data1);
-  })
-
-  it('[Oracle] 測試更新資料指令（複合鍵）', () => {
-    const payload = {
-      "email": "test@test.com",
-      "password": "password"
-    }
-    const keys = {
-      CARDNO: "1",
-      RECDT: "2",
-      RECTM: "3"
-    }
-    const expected = 'UPDATE users SET email=:params, password=:params WHERE CARDNO = :params AND RECDT = :params AND RECTM = :params'
-    const { sql, data } = updateQueryWithMultipleKeyByOracle("users", payload, keys)
-    const expectData = Object.keys(payload).map((d: any) => payload[d])
-    strictEqual(sql, expected)
-    expect(expectData).to.eql(data);
-
-    const payload1 = {
-      "password": "password"
-    }
-    const expectd1 = 'UPDATE users SET password=:params WHERE CARDNO = :params AND RECDT = :params AND RECTM = :params'
-    const { sql: actual1, data: data1 } = updateQueryWithMultipleKeyByOracle("users", payload1, keys);
-    const expectData1 = Object.keys(payload1).map((d: any) => payload1[d])
-    expect(expectData1).to.eql(data1);
-    strictEqual(actual1, expectd1);
+    expect(_.concat(expectData1, expectKeyData)).to.eql(data1);
   })
 
   it('[Oracle] 測試刪除單筆資料指令', () => {
