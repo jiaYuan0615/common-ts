@@ -1,7 +1,7 @@
 import { strictEqual } from 'assert';
 import { expect } from 'chai';
 import _ from 'lodash';
-import { insertQuery, insertMultipleQuery, updateQuery, deleteQuery, deleteMultipleQuery } from '../src/query'
+import { insertQuery, insertMultipleQuery, updateQuery, deleteQuery, deleteMultipleQuery, deleteQueryWithMultipleKey } from '../src/query'
 
 describe('資料庫指令', () => {
   it('測試新增單筆資料指令', () => {
@@ -76,6 +76,19 @@ describe('資料庫指令', () => {
     const expectd = 'DELETE FROM users WHERE avatarId = ?';
     const actual = deleteQuery("users", "avatarId")
     strictEqual(actual, expectd)
+  })
+
+  it('測試刪除資料指令（複合鍵）', () => {
+    const payload = {
+      CARDNO: "1",
+      RECDT: "2",
+      RECTM: "3"
+    }
+    const expectd = 'DELETE FROM users WHERE CARDNO = ? AND RECDT = ? AND RECTM = ?';
+    const { sql, data } = deleteQueryWithMultipleKey("users", payload)
+    const expectData = Object.keys(payload).map(v => payload[v]);
+    strictEqual(sql, expectd)
+    expect(expectData).to.eql(data);
   })
 
   it('測試刪除多筆資料指令', () => {
