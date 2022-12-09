@@ -1,6 +1,6 @@
 {
   "name": "jyz-common-library-type",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "definitely-type-common-library",
   "main": "./lib/index.js",
   "types": "./build/index.d.ts",

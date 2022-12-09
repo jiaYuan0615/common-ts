@@ -37,7 +37,7 @@ function insertMultipleQueryByOracle(tableName, params) {
         query += "INTO ".concat(tableName, " (").concat(columns, ") VALUES (").concat(replacement, ") ");
         return Object.keys(v).map(function (x) { return v[x]; });
     });
-    var sql = "INSERT ALL ".concat(query, "SELECT 1 FROM DUAL;");
+    var sql = "INSERT ALL ".concat(query, "SELECT 1 FROM DUAL");
     return {
         sql: sql,
         data: lodash_1.default.flatten(data)

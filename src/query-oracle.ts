@@ -33,7 +33,7 @@ export function insertMultipleQueryByOracle(tableName: string, params: Array<obj
     query += `INTO ${tableName} (${columns}) VALUES (${replacement}) `
     return Object.keys(v).map(x => v[x])
   });
-  const sql = `INSERT ALL ${query}SELECT 1 FROM DUAL;`
+  const sql = `INSERT ALL ${query}SELECT 1 FROM DUAL`
 
   return {
     sql,

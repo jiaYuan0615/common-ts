@@ -52,7 +52,7 @@ describe('[Oracle] 資料庫指令', () => {
       true
     ]
 
-    const expected = `INSERT ALL INTO users (id, email, password, status) VALUES (:params, :params, :params, :params) INTO users (id, email, password, status) VALUES (:params, :params, :params, :params) SELECT 1 FROM DUAL;`;
+    const expected = `INSERT ALL INTO users (id, email, password, status) VALUES (:params, :params, :params, :params) INTO users (id, email, password, status) VALUES (:params, :params, :params, :params) SELECT 1 FROM DUAL`;
     const { sql, data } = insertMultipleQueryByOracle("users", payload);
     strictEqual(sql, expected);
     expect(expectData).to.eql(data);
