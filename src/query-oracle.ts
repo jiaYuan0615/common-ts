@@ -27,13 +27,17 @@ export function insertQueryByOracle(tableName: string, params: object): any {
  */
 export function insertMultipleQueryByOracle(tableName: string, params: Array<object>): any {
   const columns = Object.keys(params[0]).join(', ');
-  const data = params.map(v => Object.keys(v).map(x => v[x]));
-  const replacement = params.map(o => `(${new Array(Object.keys(o).length).fill(':params').join(', ')})`)
-  const sql = `INSERT INTO ${tableName} (${columns}) VALUES ${replacement.join(', ')}`
+  const replacement = new Array(Object.keys(params[0]).length).fill(':params').join(', ')
+  let query = ''
+  const data = params.map(v => {
+    query += `INTO ${tableName} (${columns}) VALUES (${replacement}) `
+    return Object.keys(v).map(x => v[x])
+  });
+  const sql = `INSERT ALL ${query}SELECT 1 FROM DUAL;`
 
   return {
     sql,
-    data
+    data: _.flatten(data)
   }
 }
 

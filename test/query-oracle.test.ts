@@ -41,8 +41,18 @@ describe('[Oracle] 資料庫指令', () => {
         status: true
       }
     ]
-    const expectData = payload.map(v => Object.keys(v).map(x => v[x]));
-    const expected = 'INSERT INTO users (id, email, password, status) VALUES (:params, :params, :params, :params), (:params, :params, :params, :params)';
+    const expectData = [
+      '1',
+      'test@test.com',
+      'password',
+      true,
+      '2',
+      'test@test.com',
+      'password',
+      true
+    ]
+
+    const expected = `INSERT ALL INTO users (id, email, password, status) VALUES (:params, :params, :params, :params) INTO users (id, email, password, status) VALUES (:params, :params, :params, :params) SELECT 1 FROM DUAL;`;
     const { sql, data } = insertMultipleQueryByOracle("users", payload);
     strictEqual(sql, expected);
     expect(expectData).to.eql(data);
