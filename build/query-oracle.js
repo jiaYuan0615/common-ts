@@ -31,12 +31,16 @@ exports.insertQueryByOracle = insertQueryByOracle;
  */
 function insertMultipleQueryByOracle(tableName, params) {
     var columns = Object.keys(params[0]).join(', ');
-    var data = params.map(function (v) { return Object.keys(v).map(function (x) { return v[x]; }); });
-    var replacement = params.map(function (o) { return "(".concat(new Array(Object.keys(o).length).fill(':params').join(', '), ")"); });
-    var sql = "INSERT INTO ".concat(tableName, " (").concat(columns, ") VALUES ").concat(replacement.join(', '));
+    var replacement = new Array(Object.keys(params[0]).length).fill(':params').join(', ');
+    var query = '';
+    var data = params.map(function (v) {
+        query += "INTO ".concat(tableName, " (").concat(columns, ") VALUES (").concat(replacement, ") ");
+        return Object.keys(v).map(function (x) { return v[x]; });
+    });
+    var sql = "INSERT ALL ".concat(query, "SELECT 1 FROM DUAL;");
     return {
         sql: sql,
-        data: data
+        data: lodash_1.default.flatten(data)
     };
 }
 exports.insertMultipleQueryByOracle = insertMultipleQueryByOracle;
